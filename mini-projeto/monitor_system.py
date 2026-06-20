@@ -16,15 +16,15 @@ from logger import log
 class MonitorSystem:
     """Orquestra todos os subsistemas do monitor IoT.
 
-    Fluxo:
-      startup() → inicializa periféricos, Wi-Fi, MQTT e timer
-      run()     → loop principal: publicação, tick do LED e RSSI
+    LED RGB:
+      - Normalmente DESLIGADO
+      - Pisca verde (200ms) ao publicar com sucesso
+      - Pisca vermelho (500ms) em caso de erro
 
-    O timer apenas sinaliza uma flag; toda I/O de rede ocorre
-    no loop principal, evitando problemas de IRQ no MicroPython.
-
-    Tópicos publicados (configurados em config.py):
-      temperatura, umidade, rssi, pub_count, availability
+    Matriz WS2812:
+      - Animação durante conexão Wi-Fi
+      - Ícone Wi-Fi por 3s após conectar
+      - Desliga e fica apagada para sempre após o startup
     """
 
     def __init__(self, config):
@@ -39,7 +39,7 @@ class MonitorSystem:
 
         self.pub_count = 0
         self.timer = None
-        self._publish_flag = False  # sinalizada pelo timer, consumida no loop
+        self._publish_flag = False
 
     def startup(self):
         """Inicializa Wi-Fi, MQTT e timer de publicação."""
@@ -52,27 +52,32 @@ class MonitorSystem:
             self.net.connect_wifi(matrix=self.matrix)
         except Exception as e:
             self.matrix.error()
-            self.rgb.set(r=True)
+            self.rgb.blink(r=80, ms=500)  # pisca vermelho e apaga
             self.display.message("ERRO Wi-Fi", str(e)[:16])
             raise
 
+        # Ícone Wi-Fi por 3s, depois matriz apaga para sempre
         rssi = self.net.get_rssi()
         self.matrix.show_wifi(rssi)
-        self.rgb.blink(g=True, ms=200)
+        self.rgb.blink(g=80, ms=300)  # pisca verde = Wi-Fi OK, apaga
         self.display.message("Wi-Fi OK", "RSSI: {}".format(rssi))
-        time.sleep(1)
+        time.sleep(3)
+        self.matrix.clear()
 
-        # MQTT (connect_mqtt já publica 'online' e configura LWT)
+        # MQTT
         try:
             self.net.connect_mqtt()
         except Exception as e:
-            self.matrix.error()
-            self.rgb.set(r=True)
+            self.rgb.blink(r=80, ms=500)  # pisca vermelho e apaga
             self.display.message("ERRO MQTT", str(e)[:16])
             raise
 
+        self.rgb.blink(g=80, ms=300)  # pisca verde = MQTT OK, apaga
         self.display.message("Sistema OK", "Timer iniciado")
         time.sleep(1)
+
+        # LED garantidamente apagado antes de entrar no loop
+        self.rgb.off()
 
         # Timer: apenas seta a flag — sem I/O dentro do IRQ
         interval_ms = self.config["publish_interval_s"] * 1000
@@ -87,9 +92,9 @@ class MonitorSystem:
 
     def _do_publish(self):
         """Lê sensores e publica todos os tópicos via MQTT."""
-        temp, umid = 0.0, 0.0  # inicializa antes do try para uso no except
+        temp, umid = 0.0, 0.0
         try:
-            self.net.ensure_wifi(matrix=self.matrix)
+            self.net.ensure_wifi()
             self.net.ensure_mqtt()
 
             temp, umid = self.sensor.read()
@@ -99,24 +104,23 @@ class MonitorSystem:
             log("INFO", "T={:.2f}C  U={:.2f}%  RSSI={}  Pub#{}".format(
                 temp, umid, rssi, self.pub_count))
 
-            # Publica todos os tópicos
             self.net.publish(self.net.topic_temp,      str(temp).encode())
             self.net.publish(self.net.topic_umid,      str(umid).encode())
             self.net.publish(self.net.topic_rssi,      str(rssi).encode())
             self.net.publish(self.net.topic_pub_count, str(self.pub_count).encode())
 
-            # Feedback visual não-bloqueante
-            self.rgb.blink_start(b=True, ms=100)
-            self.matrix.flash_green()
+            # Pisca verde — apaga sozinho via tick()
+            self.rgb.blink_start(g=80, ms=200)
             self.display.show(temp, umid, status="OK", count=self.pub_count)
 
         except Exception as e:
             log("ERR", "Erro na publicação: {}".format(e))
             self.display.show(temp, umid, status="ERR", count=self.pub_count)
-            self.rgb.blink_start(r=True, ms=300)
+            # Pisca vermelho — apaga sozinho via tick()
+            self.rgb.blink_start(r=80, ms=500)
 
     def run(self):
-        """Loop principal: publicação, tick do LED e atualização do RSSI."""
+        """Loop principal: publicação e tick do LED."""
         try:
             while True:
                 try:
@@ -124,26 +128,21 @@ class MonitorSystem:
                         self._publish_flag = False
                         self._do_publish()
 
+                    # Apaga o LED após o tempo do blink
                     self.rgb.tick()
-
-                    self.net.ensure_wifi(matrix=self.matrix)
-                    rssi = self.net.get_rssi()
-                    self.matrix.show_wifi(rssi)
 
                 except Exception as e:
                     log("ERR", "Erro no loop principal: {}".format(e))
-                    self.matrix.error()
-                    self.rgb.set(r=True)
+                    self.rgb.blink_start(r=80, ms=500)
                     time.sleep(5)
                     try:
-                        self.net.ensure_wifi(matrix=self.matrix)
-                        self.rgb.off()
+                        self.net.ensure_wifi()
                     except Exception:
                         pass
 
                 time.sleep_ms(100)
 
         finally:
-            # Garante publicação de 'offline' mesmo em caso de exceção fatal
             log("WARN", "Sistema encerrando — publicando offline")
+            self.rgb.off()
             self.net.publish_offline()

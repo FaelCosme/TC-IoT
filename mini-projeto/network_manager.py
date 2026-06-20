@@ -52,9 +52,11 @@ class NetworkManager:
 
     # ── Wi-Fi ─────────────────────────────────
 
-    def connect_wifi(self, max_attempts=10, matrix=None):
+    def connect_wifi(self, max_attempts=20, matrix=None):
         """Conecta ao Wi-Fi. Exibe animação na matriz durante a espera."""
         self.wlan = network.WLAN(network.STA_IF)
+        self.wlan.active(False)  # reset para limpar estado anterior
+        time.sleep_ms(500)
         self.wlan.active(True)
         if self.wlan.isconnected():
             return self.wlan
@@ -67,7 +69,7 @@ class NetworkManager:
 
         attempts = 0
         while not self.wlan.isconnected() and attempts < max_attempts:
-            time.sleep(1)
+            time.sleep(2)  # 2s entre tentativas — mais tempo para o roteador responder
             attempts += 1
 
         if self.wlan.isconnected():
