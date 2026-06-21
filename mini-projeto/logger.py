@@ -1,8 +1,3 @@
-# ─────────────────────────────────────────────
-#  logger.py — Logging centralizado
-#  Importado por todos os módulos do projeto.
-# ─────────────────────────────────────────────
-
 import time
 
 

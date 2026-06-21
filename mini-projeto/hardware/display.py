@@ -1,7 +1,3 @@
-# ─────────────────────────────────────────────
-#  hardware/display.py — Display OLED SSD1306
-# ─────────────────────────────────────────────
-
 from machine import Pin, I2C
 from logger import log
 

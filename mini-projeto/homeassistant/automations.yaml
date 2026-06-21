@@ -1,10 +1,3 @@
-# ─────────────────────────────────────────────
-#  homeassistant/automations.yaml
-#
-#  Cole cada bloco em: Configurações → Automações
-#  ou adicione ao seu automations.yaml existente.
-# ─────────────────────────────────────────────
-
 # ── 1. Alerta de temperatura alta ────────────
 - id: bitdoglab_alerta_temp_alta
   alias: "BitDogLab — Temperatura Alta"
@@ -19,7 +12,7 @@
   action:
     - service: notify.persistent_notification
       data:
-        title: "🌡️ Temperatura Alta — BitDogLab"
+        title: "Temperatura Alta — BitDogLab"
         message: >
           Temperatura na sala atingiu
           {{ states('sensor.bitdoglab_temperatura') }}°C às
@@ -40,7 +33,7 @@
   action:
     - service: notify.persistent_notification
       data:
-        title: "❄️ Temperatura Baixa — BitDogLab"
+        title: "Temperatura Baixa — BitDogLab"
         message: >
           Temperatura na sala caiu para
           {{ states('sensor.bitdoglab_temperatura') }}°C às
@@ -61,7 +54,7 @@
   action:
     - service: notify.persistent_notification
       data:
-        title: "💧 Umidade Alta — BitDogLab"
+        title: "Umidade Alta — BitDogLab"
         message: >
           Umidade na sala atingiu
           {{ states('sensor.bitdoglab_umidade') }}% às
@@ -82,7 +75,7 @@
   action:
     - service: notify.persistent_notification
       data:
-        title: "🏜️ Umidade Baixa — BitDogLab"
+        title: "Umidade Baixa — BitDogLab"
         message: >
           Umidade na sala caiu para
           {{ states('sensor.bitdoglab_umidade') }}% às
@@ -103,7 +96,7 @@
   action:
     - service: notify.persistent_notification
       data:
-        title: "📵 BitDogLab Offline"
+        title: "BitDogLab Offline"
         message: >
           O dispositivo BitDogLab (Sala) ficou offline às
           {{ now().strftime('%H:%M') }}.
@@ -127,7 +120,7 @@
   action:
     - service: notify.persistent_notification
       data:
-        title: "✅ BitDogLab Online"
+        title: "BitDogLab Online"
         message: >
           O dispositivo BitDogLab (Sala) voltou a ficar online às
           {{ now().strftime('%H:%M') }}.
@@ -147,7 +140,7 @@
   action:
     - service: notify.persistent_notification
       data:
-        title: "📶 Sinal Fraco — BitDogLab"
+        title: "Sinal Fraco — BitDogLab"
         message: >
           Sinal Wi-Fi do BitDogLab (Sala) está fraco:
           {{ states('sensor.bitdoglab_rssi') }} dBm.

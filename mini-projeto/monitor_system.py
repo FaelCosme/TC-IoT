@@ -1,7 +1,3 @@
-# ─────────────────────────────────────────────
-#  monitor_system.py — Orquestrador principal
-# ─────────────────────────────────────────────
-
 import time
 from machine import Timer
 
@@ -14,19 +10,6 @@ from logger import log
 
 
 class MonitorSystem:
-    """Orquestra todos os subsistemas do monitor IoT.
-
-    LED RGB:
-      - Normalmente DESLIGADO
-      - Pisca verde (200ms) ao publicar com sucesso
-      - Pisca vermelho (500ms) em caso de erro
-
-    Matriz WS2812:
-      - Animação durante conexão Wi-Fi
-      - Ícone Wi-Fi por 3s após conectar
-      - Desliga e fica apagada para sempre após o startup
-    """
-
     def __init__(self, config):
         self.config = config
         pins = config["pins"]
@@ -56,9 +39,8 @@ class MonitorSystem:
             self.display.message("ERRO Wi-Fi", str(e)[:16])
             raise
 
-        # Ícone Wi-Fi por 3s, depois matriz apaga para sempre
+        # RSSI e feedback visual
         rssi = self.net.get_rssi()
-        self.matrix.show_wifi(rssi)
         self.rgb.blink(g=80, ms=300)  # pisca verde = Wi-Fi OK, apaga
         self.display.message("Wi-Fi OK", "RSSI: {}".format(rssi))
         time.sleep(3)

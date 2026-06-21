@@ -1,7 +1,3 @@
-# ─────────────────────────────────────────────
-#  hardware/matrix.py — Matriz WS2812 5x5
-# ─────────────────────────────────────────────
-
 import time
 import neopixel
 from machine import Pin
@@ -36,43 +32,6 @@ class Matrix5x5:
         self.np.fill((0, 0, 0))
         self.np.write()
 
-    def show_wifi(self, rssi):
-        """Desenha ícone de Wi-Fi com barras conforme RSSI.
-
-        RSSI >= -55 dBm → 4 barras (ótimo)
-        RSSI >= -65 dBm → 3 barras (bom)
-        RSSI >= -75 dBm → 2 barras (fraco)
-        RSSI <  -75 dBm → 1 barra  (muito fraco)
-        """
-        if rssi == self._last_rssi:
-            return
-        self._last_rssi = rssi
-        self.clear()
-
-        if rssi >= -55:
-            bars = 4
-        elif rssi >= -65:
-            bars = 3
-        elif rssi >= -75:
-            bars = 2
-        else:
-            bars = 1
-
-        green = (0, 30, 0)
-        # Barra central — sempre acesa
-        self.np[self._idx(4, 2)] = green
-
-        if bars >= 2:
-            for pos in [(4, 1), (3, 1), (4, 3), (3, 3)]:
-                self.np[self._idx(*pos)] = green
-        if bars >= 3:
-            for pos in [(4, 0), (3, 0), (2, 0), (4, 4), (3, 4), (2, 4)]:
-                self.np[self._idx(*pos)] = green
-        if bars >= 4:
-            for pos in [(1, 0), (1, 4)]:
-                self.np[self._idx(*pos)] = green
-
-        self.np.write()
 
     def connecting_animation(self):
         """Animação de carregamento exibida durante a conexão Wi-Fi."""

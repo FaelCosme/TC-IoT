@@ -1,22 +1,8 @@
-# ─────────────────────────────────────────────
-#  hardware/rgb_led.py — Controle do LED RGB
-#  BitDogLab: LED RGB cátodo-comum
-#  Pinos: R=13, G=11, B=12
-#  Lógica invertida: value(0) = aceso, value(1) = apagado
-# ─────────────────────────────────────────────
-
 import time
 from machine import Pin
 
 
 class RGBLed:
-    """Controla o LED RGB cátodo-comum da BitDogLab.
-
-    Lógica invertida: value(1) = apagado, value(0) = aceso.
-    Normalmente DESLIGADO.
-    Pisca verde ao publicar, vermelho em erro.
-    """
-
     def __init__(self, r_pin, g_pin, b_pin):
         self.r = Pin(r_pin, Pin.OUT, value=0)
         self.g = Pin(g_pin, Pin.OUT, value=0)

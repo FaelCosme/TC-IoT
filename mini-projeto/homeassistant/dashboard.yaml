@@ -1,15 +1,3 @@
-# ─────────────────────────────────────────────
-#  homeassistant/dashboard.yaml
-#
-#  Como adicionar ao HA:
-#  1. Editar dashboard → 3 pontos → Editar YAML
-#  2. Cole o conteúdo abaixo dentro de "cards:"
-#
-#  Requer: custom card "mini-graph-card" instalado via HACS
-#  (opcional — se não usar, substitua os mini-graph por
-#   entity cards simples)
-# ─────────────────────────────────────────────
-
 type: vertical-stack
 cards:
 

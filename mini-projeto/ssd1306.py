@@ -1,9 +1,3 @@
-"""
-SSD1306 OLED driver para MicroPython.
-Fonte: MicroPython oficial (MIT License)
-Inclua este arquivo na raiz da Pico W caso seu firmware
-não traga o módulo ssd1306 embutido.
-"""
 from micropython import const
 import framebuf
 

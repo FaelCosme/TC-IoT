@@ -1,7 +1,3 @@
-# ─────────────────────────────────────────────
-#  network_manager.py — Gerenciador Wi-Fi + MQTT
-# ─────────────────────────────────────────────
-
 import network
 import time
 from umqtt.robust import MQTTClient

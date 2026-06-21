@@ -1,12 +1,3 @@
-# ─────────────────────────────────────────────
-#  sensor.py — Sensor simulado de temperatura e umidade
-#
-#  Para usar um sensor real (ex: DHT22), basta criar
-#  uma nova classe com o mesmo método read() e
-#  substituir em monitor_system.py — sem alterar
-#  nenhum outro arquivo.
-# ─────────────────────────────────────────────
-
 import random
 
 

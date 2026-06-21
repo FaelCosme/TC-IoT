@@ -1,16 +1,3 @@
-# ─────────────────────────────────────────────
-#  homeassistant/configuration.yaml
-#
-#  Cole este bloco no seu configuration.yaml do HA
-#  (ou inclua via: mqtt: !include mqtt_sensors.yaml)
-#
-#  Pré-requisito: integração MQTT configurada no HA
-#  apontando para o Mosquitto no seu PC.
-#
-#  No HA: Configurações → Integrações → MQTT
-#  Broker: IP do seu PC  |  Porta: 1883
-# ─────────────────────────────────────────────
-
 mqtt:
   sensor:
 
