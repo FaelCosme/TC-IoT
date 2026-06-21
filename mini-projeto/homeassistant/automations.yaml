@@ -1,0 +1,155 @@
+# ─────────────────────────────────────────────
+#  homeassistant/automations.yaml
+#
+#  Cole cada bloco em: Configurações → Automações
+#  ou adicione ao seu automations.yaml existente.
+# ─────────────────────────────────────────────
+
+# ── 1. Alerta de temperatura alta ────────────
+- id: bitdoglab_alerta_temp_alta
+  alias: "BitDogLab — Temperatura Alta"
+  description: "Notifica quando temperatura passa de 30°C"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.bitdoglab_temperatura
+      above: 30
+      for:
+        minutes: 1       # evita disparo por pico momentâneo
+  condition: []
+  action:
+    - service: notify.persistent_notification
+      data:
+        title: "🌡️ Temperatura Alta — BitDogLab"
+        message: >
+          Temperatura na sala atingiu
+          {{ states('sensor.bitdoglab_temperatura') }}°C às
+          {{ now().strftime('%H:%M') }}.
+  mode: single
+
+# ── 2. Alerta de temperatura baixa ───────────
+- id: bitdoglab_alerta_temp_baixa
+  alias: "BitDogLab — Temperatura Baixa"
+  description: "Notifica quando temperatura cai abaixo de 20°C"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.bitdoglab_temperatura
+      below: 20
+      for:
+        minutes: 1
+  condition: []
+  action:
+    - service: notify.persistent_notification
+      data:
+        title: "❄️ Temperatura Baixa — BitDogLab"
+        message: >
+          Temperatura na sala caiu para
+          {{ states('sensor.bitdoglab_temperatura') }}°C às
+          {{ now().strftime('%H:%M') }}.
+  mode: single
+
+# ── 3. Alerta de umidade alta ─────────────────
+- id: bitdoglab_alerta_umidade_alta
+  alias: "BitDogLab — Umidade Alta"
+  description: "Notifica quando umidade passa de 80%"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.bitdoglab_umidade
+      above: 80
+      for:
+        minutes: 2
+  condition: []
+  action:
+    - service: notify.persistent_notification
+      data:
+        title: "💧 Umidade Alta — BitDogLab"
+        message: >
+          Umidade na sala atingiu
+          {{ states('sensor.bitdoglab_umidade') }}% às
+          {{ now().strftime('%H:%M') }}.
+  mode: single
+
+# ── 4. Alerta de umidade baixa ────────────────
+- id: bitdoglab_alerta_umidade_baixa
+  alias: "BitDogLab — Umidade Baixa"
+  description: "Notifica quando umidade cai abaixo de 40%"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.bitdoglab_umidade
+      below: 40
+      for:
+        minutes: 2
+  condition: []
+  action:
+    - service: notify.persistent_notification
+      data:
+        title: "🏜️ Umidade Baixa — BitDogLab"
+        message: >
+          Umidade na sala caiu para
+          {{ states('sensor.bitdoglab_umidade') }}% às
+          {{ now().strftime('%H:%M') }}.
+  mode: single
+
+# ── 5. Alerta de dispositivo offline ─────────
+- id: bitdoglab_alerta_offline
+  alias: "BitDogLab — Dispositivo Offline"
+  description: "Notifica quando o Pico W perde conexão"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.bitdoglab_online
+      to: "off"
+      for:
+        minutes: 1       # aguarda 1 min antes de alertar (evita reconexões rápidas)
+  condition: []
+  action:
+    - service: notify.persistent_notification
+      data:
+        title: "📵 BitDogLab Offline"
+        message: >
+          O dispositivo BitDogLab (Sala) ficou offline às
+          {{ now().strftime('%H:%M') }}.
+          Última temperatura registrada:
+          {{ states('sensor.bitdoglab_temperatura') }}°C.
+  mode: single
+
+# ── 6. Notificação de retorno online ─────────
+- id: bitdoglab_retorno_online
+  alias: "BitDogLab — Dispositivo Online"
+  description: "Notifica quando o Pico W volta a conectar"
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.bitdoglab_online
+      to: "on"
+  condition:
+    # Só notifica se estava offline por mais de 1 minuto
+    - condition: template
+      value_template: >
+        {{ (now() - states.binary_sensor.bitdoglab_online.last_changed).total_seconds() > 60 }}
+  action:
+    - service: notify.persistent_notification
+      data:
+        title: "✅ BitDogLab Online"
+        message: >
+          O dispositivo BitDogLab (Sala) voltou a ficar online às
+          {{ now().strftime('%H:%M') }}.
+  mode: single
+
+# ── 7. Alerta de sinal Wi-Fi fraco ────────────
+- id: bitdoglab_alerta_rssi_fraco
+  alias: "BitDogLab — Sinal Wi-Fi Fraco"
+  description: "Notifica quando RSSI cai abaixo de -80 dBm"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.bitdoglab_rssi
+      below: -80
+      for:
+        minutes: 5
+  condition: []
+  action:
+    - service: notify.persistent_notification
+      data:
+        title: "📶 Sinal Fraco — BitDogLab"
+        message: >
+          Sinal Wi-Fi do BitDogLab (Sala) está fraco:
+          {{ states('sensor.bitdoglab_rssi') }} dBm.
+          Considere aproximar o dispositivo do roteador.
+  mode: single

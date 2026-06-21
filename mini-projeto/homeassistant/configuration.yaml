@@ -1,0 +1,96 @@
+# ─────────────────────────────────────────────
+#  homeassistant/configuration.yaml
+#
+#  Cole este bloco no seu configuration.yaml do HA
+#  (ou inclua via: mqtt: !include mqtt_sensors.yaml)
+#
+#  Pré-requisito: integração MQTT configurada no HA
+#  apontando para o Mosquitto no seu PC.
+#
+#  No HA: Configurações → Integrações → MQTT
+#  Broker: IP do seu PC  |  Porta: 1883
+# ─────────────────────────────────────────────
+
+mqtt:
+  sensor:
+
+    # ── Temperatura ───────────────────────────
+    - name: "BitDogLab Temperatura"
+      unique_id: bitdoglab_sala_temperatura
+      state_topic: "bitdoglab/sala/temperatura"
+      unit_of_measurement: "°C"
+      device_class: temperature
+      state_class: measurement
+      value_template: "{{ value | float | round(2) }}"
+      availability_topic: "bitdoglab/sala/availability"
+      payload_available: "online"
+      payload_not_available: "offline"
+      device:
+        identifiers: ["bitdoglab_01"]
+        name: "BitDogLab Sala"
+        model: "Raspberry Pi Pico W"
+        manufacturer: "Raspberry Pi / IMD0907"
+
+    # ── Umidade ───────────────────────────────
+    - name: "BitDogLab Umidade"
+      unique_id: bitdoglab_sala_umidade
+      state_topic: "bitdoglab/sala/umidade"
+      unit_of_measurement: "%"
+      device_class: humidity
+      state_class: measurement
+      value_template: "{{ value | float | round(2) }}"
+      availability_topic: "bitdoglab/sala/availability"
+      payload_available: "online"
+      payload_not_available: "offline"
+      device:
+        identifiers: ["bitdoglab_01"]
+        name: "BitDogLab Sala"
+        model: "Raspberry Pi Pico W"
+        manufacturer: "Raspberry Pi / IMD0907"
+
+    # ── RSSI (força do sinal Wi-Fi) ───────────
+    - name: "BitDogLab RSSI"
+      unique_id: bitdoglab_sala_rssi
+      state_topic: "bitdoglab/sala/rssi"
+      unit_of_measurement: "dBm"
+      device_class: signal_strength
+      state_class: measurement
+      value_template: "{{ value | int }}"
+      availability_topic: "bitdoglab/sala/availability"
+      payload_available: "online"
+      payload_not_available: "offline"
+      device:
+        identifiers: ["bitdoglab_01"]
+        name: "BitDogLab Sala"
+        model: "Raspberry Pi Pico W"
+        manufacturer: "Raspberry Pi / IMD0907"
+
+    # ── Contador de publicações ───────────────
+    - name: "BitDogLab Publicações"
+      unique_id: bitdoglab_sala_pub_count
+      state_topic: "bitdoglab/sala/pub_count"
+      unit_of_measurement: "pub"
+      state_class: total_increasing
+      value_template: "{{ value | int }}"
+      availability_topic: "bitdoglab/sala/availability"
+      payload_available: "online"
+      payload_not_available: "offline"
+      device:
+        identifiers: ["bitdoglab_01"]
+        name: "BitDogLab Sala"
+        model: "Raspberry Pi Pico W"
+        manufacturer: "Raspberry Pi / IMD0907"
+
+  # ── Sensor binário de disponibilidade ───────
+  binary_sensor:
+    - name: "BitDogLab Online"
+      unique_id: bitdoglab_sala_online
+      state_topic: "bitdoglab/sala/availability"
+      payload_on: "online"
+      payload_off: "offline"
+      device_class: connectivity
+      device:
+        identifiers: ["bitdoglab_01"]
+        name: "BitDogLab Sala"
+        model: "Raspberry Pi Pico W"
+        manufacturer: "Raspberry Pi / IMD0907"

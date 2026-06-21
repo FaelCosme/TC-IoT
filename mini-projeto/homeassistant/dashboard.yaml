@@ -1,0 +1,95 @@
+# ─────────────────────────────────────────────
+#  homeassistant/dashboard.yaml
+#
+#  Como adicionar ao HA:
+#  1. Editar dashboard → 3 pontos → Editar YAML
+#  2. Cole o conteúdo abaixo dentro de "cards:"
+#
+#  Requer: custom card "mini-graph-card" instalado via HACS
+#  (opcional — se não usar, substitua os mini-graph por
+#   entity cards simples)
+# ─────────────────────────────────────────────
+
+type: vertical-stack
+cards:
+
+  # ── Cabeçalho com status online/offline ─────
+  - type: entity
+    entity: binary_sensor.bitdoglab_online
+    name: "BitDogLab"
+    icon: mdi:raspberry-pi
+    state_color: true
+
+  # ── Temperatura e Umidade lado a lado ───────
+  - type: horizontal-stack
+    cards:
+
+      - type: gauge
+        entity: sensor.bitdoglab_temperatura
+        name: Temperatura
+        unit: "°C"
+        min: 18
+        max: 40
+        needle: true
+        severity:
+          green: 20
+          yellow: 28
+          red: 33
+
+      - type: gauge
+        entity: sensor.bitdoglab_umidade
+        name: Umidade
+        unit: "%"
+        min: 30
+        max: 90
+        needle: true
+        severity:
+          green: 40
+          yellow: 70
+          red: 80
+
+  # ── Gráfico de temperatura (mini-graph-card) ─
+  - type: custom:mini-graph-card
+    entities:
+      - entity: sensor.bitdoglab_temperatura
+        name: Temperatura
+        color: "#e74c3c"
+    name: "Histórico — Temperatura"
+    hours_to_show: 6
+    points_per_hour: 12
+    line_width: 2
+    show:
+      labels: true
+      points: false
+      legend: false
+      fill: fade
+
+  # ── Gráfico de umidade (mini-graph-card) ─────
+  - type: custom:mini-graph-card
+    entities:
+      - entity: sensor.bitdoglab_umidade
+        name: Umidade
+        color: "#3498db"
+    name: "Histórico — Umidade"
+    hours_to_show: 6
+    points_per_hour: 12
+    line_width: 2
+    show:
+      labels: true
+      points: false
+      legend: false
+      fill: fade
+
+  # ── Métricas do dispositivo ──────────────────
+  - type: entities
+    title: "Métricas do Dispositivo"
+    entities:
+      - entity: sensor.bitdoglab_rssi
+        name: Sinal Wi-Fi
+        icon: mdi:wifi
+      - entity: sensor.bitdoglab_publicacoes
+        name: Total de Publicações
+        icon: mdi:upload-network
+      - entity: binary_sensor.bitdoglab_online
+        name: Status de Conexão
+        icon: mdi:lan-connect
