@@ -81,7 +81,7 @@ CONFIG = {
         "password": "SUA_SENHA"
     },
     "mqtt": {
-        "broker": "IP_DO_SEU_PC",    # ex: 192.168.0.44
+        "broker": "IP_DO_SEU_PC",    # ex: 192.168.X.X
         ...
     },
     "publish_interval_s": 30,        # intervalo entre publicações
@@ -103,7 +103,7 @@ CONFIG = {
 import os
 os.listdir()
 os.listdir('hardware')
-os.listdir('lib/umqtt')  # deve conter simple.py e robust.py
+os.listdir('lib/umqtt')  # deve conter robust.py
 ```
 
 5. Execute: `Ctrl+Shift+P` → **MicroPico: Run current file** (com `main.py` aberto)
