@@ -1,10 +1,10 @@
 CONFIG = {
     "wifi": {
-        "ssid": "Ra", # SSID da sua rede Wi-Fi modifique conforme necessário
-        "password": "12345678" # Senha da sua rede Wi-Fi modifique conforme necessário
+        "ssid": "SEU SSID", # SSID da sua rede Wi-Fi modifique conforme necessário
+        "password": "SUA_SENHA" # Senha da sua rede Wi-Fi modifique conforme necessário
     },
     "mqtt": {
-        "broker": "10.238.23.112", # Modifique para o IP do seu broker MQTT
+        "broker": "SEU_IP_BROKER", # Modifique para o IP do seu broker MQTT
         "port": 1883,
         "client_id": "bitdoglab_01",
         "keepalive": 60,
