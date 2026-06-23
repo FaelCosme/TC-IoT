@@ -1,0 +1,42 @@
+# Home Assistant data
+/config/
+!config/                     # não ignore a pasta em si (se quiser incluir algo)
+config/*                     # mas ignore todo o conteúdo
+!config/.gitkeep             # opcional: manter a pasta vazia no repo
+
+# Arquivos de dados do HA
+*.db
+*.db-*
+*.log
+*.fault
+*.lock
+.storage/
+*.sqlite
+*.sqlite-journal
+
+# Sensível
+.env
+*.env
+*.key
+*.pem
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+lib/umqtt/                   # pode ser instalado via mip, não precisa versionar
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+
+# Mac/Linux
+.DS_Store
+Thumbs.db

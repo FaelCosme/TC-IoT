@@ -1,10 +1,10 @@
 CONFIG = {
     "wifi": {
-        "ssid": "SEU_SSID", # SSID da sua rede Wi-Fi modifique conforme necessário
-        "password": "SUA_SENHA" # Senha da sua rede Wi-Fi modifique conforme necessário
+        "ssid": "Ra", # SSID da sua rede Wi-Fi modifique conforme necessário
+        "password": "12345678" # Senha da sua rede Wi-Fi modifique conforme necessário
     },
     "mqtt": {
-        "broker": "SEU_BROKER_IP", # Modifique para o IP do seu broker MQTT
+        "broker": "10.238.23.112", # Modifique para o IP do seu broker MQTT
         "port": 1883,
         "client_id": "bitdoglab_01",
         "keepalive": 60,
@@ -17,7 +17,7 @@ CONFIG = {
             "availability": b"bitdoglab/sala/availability",
         }
     },
-    "publish_interval_s": 30, # Intervalo de publicação em segundos
+    "publish_interval_s": 10, # Intervalo de publicação em segundos
     "pins": {
         "led_r":  13,
         "led_g":  11,

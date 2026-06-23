@@ -1,0 +1,15 @@
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    volumes:
+      - ./config:/config
+    ports:
+      - "${HA_PORT:-8124}:8123"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
